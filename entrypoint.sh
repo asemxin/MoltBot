@@ -25,10 +25,9 @@ PROVIDER_ID=$(echo "$API_BASE_URL" | sed 's|https\?://||' | sed 's|[^a-zA-Z0-9]|
 
 cat > /root/.openclaw/openclaw.json << JSONEOF
 {
-  "version": 1,
   "gateway": {
     "port": 18789,
-    "bind": "127.0.0.1",
+    "bind": "loopback",
     "auth": {
       "mode": "token"
     }
