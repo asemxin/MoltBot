@@ -28,8 +28,16 @@ cat > /root/.openclaw/openclaw.json << JSONEOF
   "gateway": {
     "port": 18789,
     "bind": "loopback",
+    "mode": "local",
     "auth": {
       "mode": "token"
+    }
+  },
+  "agents": {
+    "defaults": {
+      "memorySearch": {
+        "enabled": false
+      }
     }
   },
   "models": {
@@ -70,6 +78,10 @@ cat > /root/.openclaw/openclaw.json << JSONEOF
 }
 JSONEOF
 
+# 创建必要目录
+mkdir -p /root/.openclaw/agents/main/sessions
+chmod 700 /root/.openclaw
+
 echo "✅ 配置已生成"
 echo "   模型: ${PROVIDER_ID}/${MODEL_NAME}"
 echo "   飞书 App ID: ${FEISHU_APP_ID}"
@@ -93,3 +105,4 @@ sleep 5
 # ============================================
 echo "📊 启动状态监控网页 (端口 7860)..."
 exec python3 /app/status_page.py
+
