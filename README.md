@@ -1,3 +1,12 @@
+---
+title: MoltBot AI
+emoji: 🤖
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # 🤖 MoltBot AI
 
 基于 [OpenClaw](https://openclaw.ai) 的飞书 AI 助手，通过 Docker 部署到 Hugging Face Spaces。
