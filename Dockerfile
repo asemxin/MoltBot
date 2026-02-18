@@ -2,7 +2,7 @@ FROM node:24-slim
 
 # 系统依赖
 RUN apt-get update && apt-get install -y \
-    python3 python3-pip curl git procps \
+    python3 python3-pip curl git procps lsof \
     && rm -rf /var/lib/apt/lists/*
 
 # Python 依赖
