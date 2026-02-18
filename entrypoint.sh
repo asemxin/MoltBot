@@ -162,13 +162,71 @@ models_path = os.path.join(agent_dir, "models.json")
 with open(models_path, "w") as f:
     json.dump(agent_models, f, indent=2)
 
-# 确保 auth.json 存在
-auth_path = os.path.join(agent_dir, "auth.json")
-if not os.path.exists(auth_path):
-    with open(auth_path, "w") as f:
+# 确保 auth-profiles.json 存在（OpenClaw 查找的是这个文件）
+auth_path = os.path.join(agent_dir, "auth-profiles.json")
+with open(auth_path, "w") as f:
+    json.dump({}, f)
+
+# 也写一份 auth.json 以防万一
+auth2_path = os.path.join(agent_dir, "auth.json")
+if not os.path.exists(auth2_path):
+    with open(auth2_path, "w") as f:
         json.dump({}, f)
 
 print(f"✅ Agent 配置已写入 {agent_dir}")
+
+# 递归扫描所有 json 文件，替换 anthropic 引用
+import glob
+replaced = []
+provider_id = "${PROVIDER_ID}"
+model_id = "${MODEL_NAME}"
+full_model = f"{provider_id}/{model_id}"
+
+for fpath in glob.glob(os.path.expanduser("~/.openclaw/**/*.json"), recursive=True):
+    try:
+        with open(fpath) as f:
+            content = f.read()
+        if "anthropic" in content:
+            original = content
+            # 替换 model references
+            content = content.replace('"anthropic/claude-sonnet-4-20250514"', f'"{full_model}"')
+            content = content.replace('"anthropic/claude-3-5-sonnet"', f'"{full_model}"')
+            content = content.replace('"anthropic/claude-3-5-haiku"', f'"{full_model}"')
+            content = content.replace('"anthropic/claude-3-haiku"', f'"{full_model}"')
+            # 通用 anthropic provider 引用
+            content = content.replace('"anthropic"', f'"{provider_id}"')
+            if content != original:
+                with open(fpath, "w") as f:
+                    f.write(content)
+                replaced.append(fpath)
+    except:
+        pass
+
+if replaced:
+    print(f"⚠️ 替换了 {len(replaced)} 个文件中的 anthropic 引用:")
+    for r in replaced:
+        print(f"   - {r}")
+else:
+    print("✅ 未发现 anthropic 引用")
+
+# 打印调试信息
+print("\n🔍 调试 - openclaw.json:")
+try:
+    with open(config_path) as f:
+        print(f.read()[:2000])
+except:
+    print("  无法读取")
+
+print("\n🔍 调试 - agent 目录内容:")
+for fpath in glob.glob(os.path.join(agent_dir, "*")):
+    print(f"  {fpath}")
+    try:
+        with open(fpath) as f:
+            c = f.read()[:500]
+            print(f"    {c}")
+    except:
+        pass
+
 PYEOF
 
 # ============================================
