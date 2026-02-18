@@ -89,6 +89,62 @@ echo "   飞书 App ID: ${FEISHU_APP_ID}"
 echo "🔧 运行 doctor --fix..."
 openclaw doctor --fix || true
 
+# doctor --fix 会覆盖配置，重新写入我们的配置
+echo "📝 重新写入自定义配置（防止 doctor 覆盖）..."
+cp /root/.openclaw/openclaw.json /root/.openclaw/openclaw.json.doctor
+cat > /root/.openclaw/openclaw.json << JSONEOF2
+{
+  "gateway": {
+    "port": 18789,
+    "bind": "loopback",
+    "mode": "local"
+  },
+  "agents": {
+    "defaults": {
+      "model": "${PROVIDER_ID}/${MODEL_NAME}",
+      "memorySearch": {
+        "enabled": false
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "${PROVIDER_ID}": {
+        "baseUrl": "${API_BASE_URL}",
+        "apiKey": "${API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "${MODEL_NAME}",
+            "name": "${MODEL_NAME}",
+            "reasoning": false,
+            "input": ["text"],
+            "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+            "contextWindow": 1000000,
+            "maxTokens": 32000
+          }
+        ]
+      }
+    }
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "appId": "${FEISHU_APP_ID}",
+      "appSecret": "${FEISHU_APP_SECRET}"
+    }
+  },
+  "plugins": {
+    "entries": {
+      "feishu-openclaw": {
+        "enabled": true
+      }
+    }
+  }
+}
+JSONEOF2
+
 echo "🚀 启动 OpenClaw Gateway..."
 openclaw gateway --force &
 GATEWAY_PID=$!
@@ -102,4 +158,3 @@ sleep 5
 # ============================================
 echo "📊 启动状态监控网页 (端口 7860)..."
 exec python3 /app/status_page.py
-
