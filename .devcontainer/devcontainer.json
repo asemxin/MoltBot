@@ -1,0 +1,5 @@
+{
+    "name": "MoltBot AI",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "postStartCommand": "if [ -f ~/keepalive.sh ]; then nohup bash ~/keepalive.sh > /tmp/keepalive.log 2>&1 & fi"
+}
