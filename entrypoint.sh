@@ -77,6 +77,9 @@ echo "   飞书 App ID: ${FEISHU_APP_ID}"
 # ============================================
 # 启动 OpenClaw Gateway（后台）
 # ============================================
+echo "🔧 运行 doctor --fix..."
+openclaw doctor --fix || true
+
 echo "🚀 启动 OpenClaw Gateway..."
 openclaw gateway --force &
 GATEWAY_PID=$!
