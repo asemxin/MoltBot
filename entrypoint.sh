@@ -30,7 +30,7 @@ cat > /root/.openclaw/openclaw.json << JSONEOF
     "bind": "loopback",
     "mode": "local",
     "auth": {
-      "mode": "token"
+      "mode": "none"
     }
   },
   "agents": {
