@@ -28,10 +28,7 @@ cat > /root/.openclaw/openclaw.json << JSONEOF
   "gateway": {
     "port": 18789,
     "bind": "loopback",
-    "mode": "local",
-    "auth": {
-      "mode": "none"
-    }
+    "mode": "local"
   },
   "agents": {
     "defaults": {
