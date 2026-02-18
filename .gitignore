@@ -1,13 +1,11 @@
-# Dependencies
-node_modules/
+# 敏感配置文件
+config.env
 
-# Environment
-.env
-.env.local
-
-# OpenClaw data
+# OpenClaw 运行时
 .openclaw/
-.moltbot/
+
+# Node
+node_modules/
 
 # OS
 .DS_Store
@@ -16,6 +14,5 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
-
-# Logs
-*.log
+*.swp
+*.swo
